@@ -98,7 +98,13 @@
         <label><input type="radio" name="seat-edit-mode" value="blocked"> Blocked</label>
         <label><input type="radio" name="seat-edit-mode" value="accessible"> Accessible</label>
       </div>
-      <div id="seating-grid" class="seating-grid" aria-label="Seating layout" role="grid"></div>
+      <div id="grid-stage" class="grid-stage" data-teacher-at="front">
+        <div id="grid-orientation" class="grid-orientation" role="note" aria-label="Teacher at front">
+          <span class="teacher-icon" aria-hidden="true">&#x1F468;&#x200D;&#x1F3EB;</span>
+          <span id="teacher-label" class="teacher-label">Teacher (Front)</span>
+        </div>
+        <div id="seating-grid" class="seating-grid" aria-label="Seating layout" role="grid"></div>
+      </div>
     </section>
 
     <aside class="panel" id="layout-panel" aria-labelledby="layout-heading">

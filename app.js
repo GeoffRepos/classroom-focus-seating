@@ -106,6 +106,9 @@
     dom.zoneFrontOutput = document.getElementById("zone-front-output");
     dom.zoneMiddleOutput = document.getElementById("zone-middle-output");
 
+    dom.gridStage = document.getElementById("grid-stage");
+    dom.gridOrientation = document.getElementById("grid-orientation");
+    dom.teacherLabel = document.getElementById("teacher-label");
     dom.seatingGrid = document.getElementById("seating-grid");
 
     dom.unresolvedMappings = document.getElementById("unresolved-mappings");
@@ -1172,6 +1175,19 @@
     const seatData = buildSeats(state.layout);
     const assignment = state.plan.assignment || {};
     const seatOccupants = getSeatOccupants(assignment);
+    const teacherPosition = getTeacherPositionKey(state.layout.teacherAt);
+
+    if (dom.gridStage) {
+      dom.gridStage.dataset.teacherAt = teacherPosition;
+    }
+
+    if (dom.gridOrientation) {
+      dom.gridOrientation.setAttribute("aria-label", `Teacher at ${teacherPosition}`);
+    }
+
+    if (dom.teacherLabel) {
+      dom.teacherLabel.textContent = `Teacher (${capitalizeWord(teacherPosition)})`;
+    }
 
     dom.seatingGrid.style.gridTemplateColumns = `repeat(${state.layout.cols}, minmax(74px, 1fr))`;
     dom.seatingGrid.innerHTML = "";
@@ -1227,6 +1243,26 @@
 
       dom.seatingGrid.appendChild(seatEl);
     });
+  }
+
+  function getTeacherPositionKey(teacherAt) {
+    switch (teacherAt) {
+      case "Back":
+        return "back";
+      case "Left":
+        return "left";
+      case "Right":
+        return "right";
+      case "Front":
+      case "FrontCenter":
+      default:
+        return "front";
+    }
+  }
+
+  function capitalizeWord(word) {
+    if (!word) return "Front";
+    return word.charAt(0).toUpperCase() + word.slice(1);
   }
 
   function renderDiagnostics() {
