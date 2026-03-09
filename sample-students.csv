@@ -1,0 +1,11 @@
+name,priorityLevel,cannotSitNextTo,cannotSitNear,worksWellWith,mustBeInZone,mustBeInRowRange,needsAccessibilitySeat,preferNearTeacher,preferGroup,lockToSeat
+Alex,3,Sam|Jordan,Sam,,Front,,true,true,Group A,
+Sam,2,Alex,,Jordan,Middle,,false,false,Group A,
+Jordan,1,,Alex,Sam,,,false,false,Group B,
+Taylor,2,Riley,,Morgan,Front,1-2,false,true,Group A,
+Riley,1,Taylor,,Avery,Back,,false,false,Group C,
+Morgan,3,,Riley,Taylor,Middle,2-4,true,false,Group B,
+Avery,1,,Jordan|Riley,,Back,,false,false,Group C,
+Casey,2,,,Alex|Sam,,,false,true,Group A,
+Jamie,1,,,,,,false,false,,
+Quinn,1,,,Jamie,,,false,false,,

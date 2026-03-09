@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classroom Focus Seating</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="title-block">
+      <h1>Classroom Focus Seating</h1>
+      <p class="subtitle">Minimise disruptions, maximise learning.</p>
+      <p class="privacy-inline">All data stays on this device; nothing is uploaded.</p>
+    </div>
+    <div class="action-row" aria-label="Primary actions">
+      <button id="btn-generate" class="btn btn-accent">Generate Plan</button>
+      <button id="btn-regenerate" class="btn">Regenerate</button>
+      <button id="btn-save" class="btn">Save</button>
+      <button id="btn-print" class="btn">Print</button>
+      <button id="btn-export" class="btn">Export CSV</button>
+      <button id="btn-import" class="btn">Import CSV</button>
+      <button id="btn-reset" class="btn btn-warn">Reset</button>
+      <input id="csv-import-input" type="file" accept=".csv,text/csv" hidden>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="panel" id="students-panel" aria-labelledby="students-heading">
+      <div class="panel-head">
+        <h2 id="students-heading">Students</h2>
+        <div class="inline-controls">
+          <button id="btn-add-student" class="btn">Add</button>
+          <button id="btn-remove-student" class="btn btn-danger">Remove</button>
+        </div>
+      </div>
+      <ul id="student-list" class="student-list" aria-label="Student roster"></ul>
+
+      <section class="editor" aria-labelledby="student-editor-heading">
+        <h3 id="student-editor-heading">Student Editor</h3>
+        <form id="student-form" autocomplete="off">
+          <label>Name
+            <input id="student-name" type="text" required>
+          </label>
+          <label>Priority
+            <select id="student-priority">
+              <option value="3">3 - Highest</option>
+              <option value="2">2 - High</option>
+              <option value="1">1 - Normal</option>
+            </select>
+          </label>
+          <label>Cannot Sit Next To (names, | separated)
+            <input id="student-cannot-next" type="text" placeholder="Sam|Jordan">
+          </label>
+          <label>Cannot Sit Near (names, | separated)
+            <input id="student-cannot-near" type="text" placeholder="Alex|Taylor">
+          </label>
+          <label>Works Well With (names, | separated)
+            <input id="student-works-well" type="text" placeholder="Casey|Riley">
+          </label>
+          <label>Must Be In Zone
+            <select id="student-zone">
+              <option value="">None</option>
+              <option value="Front">Front</option>
+              <option value="Middle">Middle</option>
+              <option value="Back">Back</option>
+            </select>
+          </label>
+          <label>Must Be In Row Range (e.g. 1-3)
+            <input id="student-row-range" type="text" placeholder="1-3">
+          </label>
+          <label>Prefer Group
+            <input id="student-group" type="text" placeholder="Lit Group A">
+          </label>
+          <label>Lock To Seat (e.g. R2C4)
+            <input id="student-lock-seat" type="text" placeholder="R1C1">
+          </label>
+          <label class="checkbox-row">
+            <input id="student-access" type="checkbox">
+            Needs Accessibility Seat (hard)
+          </label>
+          <label class="checkbox-row">
+            <input id="student-near-teacher" type="checkbox">
+            Prefer Near Teacher (soft)
+          </label>
+        </form>
+      </section>
+    </aside>
+
+    <section class="panel panel-center" aria-labelledby="grid-heading">
+      <div class="panel-head">
+        <h2 id="grid-heading">Seating Grid</h2>
+        <p class="muted">Drag and drop to move/swap. Click pin icon to lock a student.</p>
+      </div>
+      <div class="grid-toolbar" role="group" aria-label="Seat marking mode">
+        <span class="toolbar-label">Seat Marking:</span>
+        <label><input type="radio" name="seat-edit-mode" value="none" checked> Off</label>
+        <label><input type="radio" name="seat-edit-mode" value="blocked"> Blocked</label>
+        <label><input type="radio" name="seat-edit-mode" value="accessible"> Accessible</label>
+      </div>
+      <div id="seating-grid" class="seating-grid" aria-label="Seating layout" role="grid"></div>
+    </section>
+
+    <aside class="panel" id="layout-panel" aria-labelledby="layout-heading">
+      <div class="panel-head">
+        <h2 id="layout-heading">Layout and Settings</h2>
+      </div>
+      <form id="layout-form" autocomplete="off">
+        <label>Rows
+          <input id="layout-rows" type="number" min="3" max="12">
+        </label>
+        <label>Columns
+          <input id="layout-cols" type="number" min="1" max="12">
+        </label>
+        <label>Near Radius
+          <input id="layout-radius" type="number" min="1" max="4">
+        </label>
+        <label>Teacher Position
+          <select id="layout-teacher">
+            <option value="FrontCenter">Front Center</option>
+            <option value="Front">Front</option>
+            <option value="Back">Back</option>
+            <option value="Left">Left</option>
+            <option value="Right">Right</option>
+          </select>
+        </label>
+        <label>Random Seed
+          <input id="layout-seed" type="number" min="1" max="999999">
+        </label>
+        <label>Max Solver Expansions
+          <input id="layout-max-nodes" type="number" min="100" max="50000" step="100">
+        </label>
+      </form>
+
+      <section class="zones" aria-labelledby="zones-heading">
+        <h3 id="zones-heading">Zone Boundaries</h3>
+        <label>Front Ends At Row <output id="zone-front-output">2</output>
+          <input id="zone-front-end" type="range" min="1" max="12" value="2">
+        </label>
+        <label>Middle Ends At Row <output id="zone-middle-output">4</output>
+          <input id="zone-middle-end" type="range" min="2" max="12" value="4">
+        </label>
+      </section>
+
+      <section class="diagnostics" aria-labelledby="diagnostics-heading">
+        <h3 id="diagnostics-heading">Diagnostics</h3>
+        <div id="unresolved-mappings"></div>
+        <button id="btn-apply-mappings" class="btn" type="button">Apply Name Mappings</button>
+        <ul id="diagnostics-list" class="diagnostics-list"></ul>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="statusbar" aria-live="polite">
+    <span id="status-text">Ready.</span>
+    <span id="score-text">Score: 0</span>
+    <span class="legend">Legend: <i class="dot ok"></i> feasible <i class="dot warn"></i> warning <i class="dot error"></i> hard conflict</span>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
